@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -9,41 +9,39 @@ const inter = Inter({
   display: "swap",
 });
 
-const fraunces = Fraunces({
-  variable: "--font-display",
-  subsets: ["latin"],
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "Belgotex | South Africa's Leading Carpet & Flooring Manufacturer",
+  title: "Belgotex | Floors That Inspire You",
   description:
-    "Belgotex crafts premium carpets, vinyl, rugs, carpet tiles and artificial grass for homes and commercial spaces across Africa. See what a 1000x faster, modern Belgotex could feel like.",
+    "Belgotex is Africa's leading carpet and artificial grass manufacturer. For over 40 years we have crafted broadloom carpets, carpet tiles, luxury vinyl and rugs that bring together thoughtful design, technical performance and a deep respect for people and the planet.",
   keywords: [
     "Belgotex",
     "carpet",
-    "vinyl flooring",
     "carpet tiles",
+    "vinyl flooring",
+    "luxury vinyl tile",
     "rugs",
     "artificial grass",
+    "broadloom",
     "South Africa flooring",
     "commercial flooring",
-    "B2B lead generation",
+    "soft flooring",
+    "Stainproof Miracle Fibre",
   ],
-  authors: [{ name: "Belgotex Demo" }],
+  authors: [{ name: "Belgotex" }],
   openGraph: {
-    title: "Belgotex — Reimagined",
+    title: "Belgotex | Floors That Inspire You",
     description:
-      "A 1000x faster, accessible, modern demo of what Belgotex could be. Built by Hustle Portal.",
-    url: "https://belgotex-demo.vercel.app",
-    siteName: "Belgotex Demo",
+      "Africa's leading carpet and artificial grass manufacturer. Over 40 years of flooring craft.",
+    url: "https://www.belgotex.co.za/",
+    siteName: "Belgotex",
     type: "website",
+    locale: "en_ZA",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Belgotex — Reimagined",
+    title: "Belgotex | Floors That Inspire You",
     description:
-      "A 1000x faster, accessible, modern demo of what Belgotex could be.",
+      "Africa's leading carpet and artificial grass manufacturer.",
   },
   robots: { index: true, follow: true },
 };
@@ -56,7 +54,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${fraunces.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${inter.variable} font-sans antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />

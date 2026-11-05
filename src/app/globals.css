@@ -44,73 +44,83 @@
 }
 
 :root {
-  /* Belgotex-inspired warm, earthy palette */
-  --radius: 0.5rem;
+  /*
+   * Real Belgotex brand palette.
+   * Source: belgotex.co.za/site.min.css
+   *   --bs-btn-bg:#009347  (Belgotex Green, the primary brand colour)
+   *   --bs-beige-light:#e0ded1
+   *   --bs-beige:#c8c1b9
+   *   body color:#63666a (charcoal)
+   *   accent #ff6941 (terracotta, used on new-arrivals)
+   *   bg:#ece8e5 (warm cream)
+   */
+  --radius: 0.25rem;
 
-  /* Cream/off-white background — like raw wool */
-  --background: oklch(0.985 0.008 80);
-  --foreground: oklch(0.18 0.02 50);
+  /* Warm cream background, like raw wool */
+  --background: #ece8e5;
+  --foreground: #212529;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 50);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 50);
+  --card: #ffffff;
+  --card-foreground: #212529;
+  --popover: #ffffff;
+  --popover-foreground: #212529;
 
-  /* Deep espresso — like rich coffee beans / dark wool */
-  --primary: oklch(0.22 0.02 50);
-  --primary-foreground: oklch(0.985 0.008 80);
+  /* Belgotex Green, the signature brand colour */
+  --primary: #009347;
+  --primary-foreground: #ffffff;
 
-  /* Warm beige/khaki */
-  --secondary: oklch(0.92 0.02 70);
-  --secondary-foreground: oklch(0.22 0.02 50);
+  /* Warm beige, their secondary surface */
+  --secondary: #e0ded1;
+  --secondary-foreground: #212529;
 
-  --muted: oklch(0.95 0.01 70);
-  --muted-foreground: oklch(0.45 0.02 50);
+  --muted: #f4f4f4;
+  --muted-foreground: #63666a;
 
-  /* Terracotta accent — Belgotex warmth, fired clay */
-  --accent: oklch(0.62 0.13 45);
-  --accent-foreground: oklch(0.985 0.008 80);
+  /* Terracotta accent, used on Belgotex new-arrivals */
+  --accent: #ff6941;
+  --accent-foreground: #ffffff;
 
-  --destructive: oklch(0.55 0.22 25);
-  --border: oklch(0.88 0.01 70);
-  --input: oklch(0.88 0.01 70);
-  --ring: oklch(0.62 0.13 45);
+  --destructive: #991f1f;
+  --border: #c8c1b9;
+  --input: #c8c1b9;
+  --ring: #009347;
 
-  --chart-1: oklch(0.62 0.13 45);
-  --chart-2: oklch(0.5 0.09 140);
-  --chart-3: oklch(0.7 0.15 75);
-  --chart-4: oklch(0.45 0.1 280);
-  --chart-5: oklch(0.55 0.18 15);
+  /* Carpet-tile blues and product accent colours */
+  --chart-1: #009347;
+  --chart-2: #4c688a;
+  --chart-3: #ff6941;
+  --chart-4: #c8c1b9;
+  --chart-5: #63666a;
 
-  --sidebar: oklch(0.985 0.008 80);
-  --sidebar-foreground: oklch(0.18 0.02 50);
-  --sidebar-primary: oklch(0.22 0.02 50);
-  --sidebar-primary-foreground: oklch(0.985 0.008 80);
-  --sidebar-accent: oklch(0.92 0.02 70);
-  --sidebar-accent-foreground: oklch(0.22 0.02 50);
-  --sidebar-border: oklch(0.88 0.01 70);
-  --sidebar-ring: oklch(0.62 0.13 45);
+  --sidebar: #ece8e5;
+  --sidebar-foreground: #212529;
+  --sidebar-primary: #009347;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e0ded1;
+  --sidebar-accent-foreground: #212529;
+  --sidebar-border: #c8c1b9;
+  --sidebar-ring: #009347;
 }
 
 .dark {
-  --background: oklch(0.16 0.015 50);
-  --foreground: oklch(0.96 0.01 80);
-  --card: oklch(0.22 0.02 50);
-  --card-foreground: oklch(0.96 0.01 80);
-  --popover: oklch(0.22 0.02 50);
-  --popover-foreground: oklch(0.96 0.01 80);
-  --primary: oklch(0.96 0.01 80);
-  --primary-foreground: oklch(0.22 0.02 50);
-  --secondary: oklch(0.3 0.02 50);
-  --secondary-foreground: oklch(0.96 0.01 80);
-  --muted: oklch(0.3 0.02 50);
-  --muted-foreground: oklch(0.7 0.02 70);
-  --accent: oklch(0.7 0.14 45);
-  --accent-foreground: oklch(0.16 0.015 50);
-  --destructive: oklch(0.7 0.19 22);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.7 0.14 45);
+  --background: #212529;
+  --foreground: #ece8e5;
+  --card: #2c3035;
+  --card-foreground: #ece8e5;
+  --popover: #2c3035;
+  --popover-foreground: #ece8e5;
+  --primary: #009347;
+  --primary-foreground: #ffffff;
+  --secondary: #3d4348;
+  --secondary-foreground: #ece8e5;
+  --muted: #3d4348;
+  --muted-foreground: #bbbcbc;
+  --accent: #ff6941;
+  --accent-foreground: #ffffff;
+  --destructive: #ff5c5c;
+  --border: #495057;
+  --input: #495057;
+  --ring: #009347;
 }
 
 @layer base {
@@ -120,22 +130,22 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  /* Smooth scroll for in-page anchors */
   html {
     scroll-behavior: smooth;
   }
-  /* Better focus visibility for accessibility */
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-accent;
+    @apply outline-2 outline-offset-2 outline-primary;
   }
 }
 
-/* Custom utilities */
 @layer utilities {
   .font-display {
-    font-family: var(--font-display), serif;
+    font-family: var(--font-display), sans-serif;
     font-feature-settings: "ss01";
+    letter-spacing: -0.02em;
   }
   .text-balance {
     text-wrap: balance;
@@ -143,9 +153,8 @@
   .text-pretty {
     text-wrap: pretty;
   }
-  /* Marquee animation */
   .marquee-track {
-    animation: marquee 35s linear infinite;
+    animation: marquee 38s linear infinite;
     width: max-content;
   }
   @keyframes marquee {
@@ -163,26 +172,6 @@
       justify-content: center;
       white-space: normal;
       width: 100%;
-    }
-  }
-  /* Subtle grain texture overlay for hero */
-  .bg-grain {
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      oklch(0.5 0.02 50 / 0.04) 1px,
-      transparent 0
-    );
-    background-size: 24px 24px;
-  }
-  /* Performance-focused: respect reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
     }
   }
 }

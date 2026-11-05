@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
   { label: "Products", href: "#products" },
-  { label: "Why Belgotex", href: "#why" },
+  { label: "New Arrivals", href: "#new-arrivals" },
+  { label: "Our Story", href: "#story" },
+  { label: "Performance", href: "#performance" },
   { label: "B2B Growth", href: "#b2b" },
-  { label: "Demo Audit", href: "#audit" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -25,7 +27,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -38,8 +39,8 @@ export function Navbar() {
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-background/85 backdrop-blur-md border-b border-border/60 shadow-sm"
-          : "bg-transparent",
+          ? "bg-white/95 backdrop-blur-md border-b border-[#c8c1b9] shadow-sm"
+          : "bg-white/80 backdrop-blur-sm",
       )}
     >
       <nav
@@ -47,28 +48,27 @@ export function Navbar() {
         aria-label="Primary"
       >
         <div className="flex h-16 sm:h-20 items-center justify-between">
-          {/* Logo */}
           <Link
             href="#top"
-            className="flex items-center gap-2 font-display text-xl sm:text-2xl font-semibold tracking-tight text-primary"
-            aria-label="Belgotex — home"
+            className="flex items-center gap-2"
+            aria-label="Belgotex, back to top"
           >
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-accent text-accent-foreground text-base font-bold">
-              B
-            </span>
-            <span>Belgotex</span>
-            <span className="hidden sm:inline-block ml-1 text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-sans font-medium align-top mt-2">
-              reimagined
-            </span>
+            <Image
+              src="/belgotex/belgotex-logo.svg"
+              alt="Belgotex"
+              width={140}
+              height={35}
+              priority
+              className="h-7 sm:h-9 w-auto"
+            />
           </Link>
 
-          {/* Desktop nav */}
-          <ul className="hidden lg:flex items-center gap-8">
+          <ul className="hidden lg:flex items-center gap-7">
             {navLinks.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-sm font-medium text-foreground/80 hover:text-accent transition-colors"
+                  className="text-sm font-medium text-[#212529] hover:text-[#009347] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -76,30 +76,28 @@ export function Navbar() {
             ))}
           </ul>
 
-          {/* Desktop CTAs */}
           <div className="hidden lg:flex items-center gap-3">
             <Button
               asChild
               variant="ghost"
               size="sm"
-              className="text-foreground/80 hover:text-accent"
+              className="text-[#63666a] hover:text-[#009347] hover:bg-[#ece8e5]"
             >
               <Link href="#products">Explore Range</Link>
             </Button>
             <Button
               asChild
               size="sm"
-              className="bg-accent text-accent-foreground hover:bg-accent/90"
+              className="bg-[#009347] text-white hover:bg-[#007a3c]"
             >
-              <Link href="#contact">Request a Quote</Link>
+              <Link href="#contact">Get a Quote</Link>
             </Button>
           </div>
 
-          {/* Mobile toggle */}
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-md text-primary hover:bg-secondary transition-colors"
+            className="lg:hidden inline-flex h-11 w-11 items-center justify-center rounded-md text-[#212529] hover:bg-[#ece8e5] transition-colors"
             aria-expanded={open}
             aria-controls="mobile-menu"
             aria-label={open ? "Close menu" : "Open menu"}
@@ -109,11 +107,10 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile menu */}
       {open && (
         <div
           id="mobile-menu"
-          className="lg:hidden bg-background border-t border-border"
+          className="lg:hidden bg-white border-t border-[#c8c1b9]"
         >
           <ul className="px-4 py-4 space-y-1">
             {navLinks.map((link) => (
@@ -121,7 +118,7 @@ export function Navbar() {
                 <Link
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-3 py-3 text-base font-medium text-foreground/90 hover:bg-secondary hover:text-accent transition-colors"
+                  className="block rounded-md px-3 py-3 text-base font-medium text-[#212529] hover:bg-[#ece8e5] hover:text-[#009347] transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -130,10 +127,10 @@ export function Navbar() {
             <li className="pt-2">
               <Button
                 asChild
-                className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
+                className="w-full bg-[#009347] text-white hover:bg-[#007a3c]"
               >
                 <Link href="#contact" onClick={() => setOpen(false)}>
-                  Request a Quote
+                  Get a Quote
                 </Link>
               </Button>
             </li>

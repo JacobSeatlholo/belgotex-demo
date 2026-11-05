@@ -1,13 +1,14 @@
 import Link from "next/link";
-import { Linkedin, Facebook, Instagram, MapPin, Phone, Mail } from "lucide-react";
+import Image from "next/image";
+import { Linkedin, Facebook, Instagram, MapPin, Phone } from "lucide-react";
 
 const columns = [
   {
     title: "Products",
     links: [
       { label: "Carpets", href: "#products" },
+      { label: "Carpet Tiles", href: "#new-arrivals" },
       { label: "Vinyl", href: "#products" },
-      { label: "Carpet Tile", href: "#products" },
       { label: "Rugs", href: "#products" },
       { label: "Artificial Grass", href: "#products" },
     ],
@@ -15,21 +16,21 @@ const columns = [
   {
     title: "Company",
     links: [
-      { label: "About Belgotex", href: "#why" },
-      { label: "Sustainability", href: "#why" },
+      { label: "Our Story", href: "#story" },
       { label: "Careers", href: "#contact" },
-      { label: "Trade Partners", href: "#contact" },
-      { label: "Press", href: "#contact" },
+      { label: "Where to Buy", href: "#contact" },
+      { label: "Find Installers", href: "#contact" },
+      { label: "Support", href: "#contact" },
     ],
   },
   {
     title: "Demo Pitch",
     links: [
-      { label: "Lighthouse audit", href: "#audit" },
-      { label: "B2B lead gen", href: "#b2b" },
+      { label: "Performance Audit", href: "#performance" },
+      { label: "B2B Lead Generation", href: "#b2b" },
       { label: "Hustle Portal", href: "https://www.hustleportal.online/" },
-      { label: "Request a quote", href: "#contact" },
-      { label: "Strategy call", href: "#contact" },
+      { label: "Get a Quote", href: "#contact" },
+      { label: "Strategy Call", href: "#contact" },
     ],
   },
 ];
@@ -54,69 +55,53 @@ const socials = [
 
 export function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground">
+    <footer className="bg-[#63666a] text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="grid gap-10 lg:grid-cols-12">
-          {/* Brand */}
           <div className="lg:col-span-4">
-            <Link
-              href="#top"
-              className="flex items-center gap-2 font-display text-2xl font-semibold"
-              aria-label="Belgotex — back to top"
-            >
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-accent text-accent-foreground text-base font-bold">
-                B
-              </span>
-              <span>Belgotex</span>
-            </Link>
-            <p className="mt-4 text-sm text-primary-foreground/70 max-w-sm">
-              South Africa&apos;s leading carpet and artificial grass
-              manufacturer. This is a demo, built by Hustle Portal, showing what
-              a 1000x faster Belgotex could feel like.
+            <Image
+              src="/belgotex/belgotex-logo-white.svg"
+              alt="Belgotex"
+              width={200}
+              height={50}
+              className="h-10 w-auto mb-4"
+            />
+            <p className="text-sm text-white/80 max-w-sm">
+              Belgotex is Africa&apos;s leading carpet and artificial grass
+              manufacturer. For over 40 years we have crafted flooring
+              solutions that bring together thoughtful design, technical
+              performance and a deep respect for people and the planet.
             </p>
 
             <ul className="mt-6 space-y-2 text-sm list-none p-0">
               <li className="flex items-start gap-2.5">
                 <MapPin
-                  className="h-4 w-4 mt-0.5 text-accent shrink-0"
+                  className="h-4 w-4 mt-0.5 text-[#009347] shrink-0"
                   aria-hidden="true"
                 />
-                <span className="text-primary-foreground/80">
+                <span className="text-white/80">
                   Pietermaritzburg, KwaZulu-Natal, South Africa
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
                 <Phone
-                  className="h-4 w-4 mt-0.5 text-accent shrink-0"
+                  className="h-4 w-4 mt-0.5 text-[#009347] shrink-0"
                   aria-hidden="true"
                 />
                 <a
                   href="tel:+27333461000"
-                  className="text-primary-foreground/80 hover:text-accent transition-colors"
+                  className="text-white/80 hover:text-[#009347] transition-colors"
                 >
                   +27 33 346 1000
-                </a>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <Mail
-                  className="h-4 w-4 mt-0.5 text-accent shrink-0"
-                  aria-hidden="true"
-                />
-                <a
-                  href="mailto:hello@belgotex-demo.vercel.app"
-                  className="text-primary-foreground/80 hover:text-accent transition-colors"
-                >
-                  hello@belgotex-demo.vercel.app
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Link columns */}
           <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-3 gap-8">
             {columns.map((col) => (
               <nav key={col.title} aria-label={col.title}>
-                <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">
+                <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#009347] mb-4">
                   {col.title}
                 </h3>
                 <ul className="space-y-2.5 list-none p-0">
@@ -129,14 +114,14 @@ export function Footer() {
                             href={link.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm text-primary-foreground/75 hover:text-accent transition-colors"
+                            className="text-sm text-white/75 hover:text-[#009347] transition-colors"
                           >
                             {link.label}
                           </a>
                         ) : (
                           <Link
                             href={link.href}
-                            className="text-sm text-primary-foreground/75 hover:text-accent transition-colors"
+                            className="text-sm text-white/75 hover:text-[#009347] transition-colors"
                           >
                             {link.label}
                           </Link>
@@ -149,9 +134,8 @@ export function Footer() {
             ))}
           </div>
 
-          {/* Socials */}
           <div className="lg:col-span-2">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.2em] text-[#009347] mb-4">
               Follow
             </h3>
             <ul className="flex lg:flex-col gap-3 list-none p-0">
@@ -162,7 +146,7 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Belgotex on ${s.label}`}
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-primary-foreground/20 text-primary-foreground/80 hover:bg-accent hover:text-accent-foreground hover:border-accent transition-colors"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-white/20 text-white/80 hover:bg-[#009347] hover:text-white hover:border-[#009347] transition-colors"
                   >
                     <s.icon className="h-4 w-4" aria-hidden="true" />
                   </a>
@@ -172,38 +156,47 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-6 border-t border-primary-foreground/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="text-xs text-primary-foreground/60">
-            © {new Date().getFullYear()} Belgotex demo. Built by{" "}
-            <a
-              href="https://www.hustleportal.online/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent hover:underline underline-offset-2"
-            >
-              Hustle Portal
-            </a>
-            . Not affiliated with Belgotex Floorcoverings (Pty) Ltd — pitch use
-            only.
+        <div className="mt-12 pt-6 border-t border-white/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <p className="text-xs text-white/60">
+            &copy; {new Date().getFullYear()} Belgotex. All rights reserved.
+            This is a demonstration site built for pitch purposes and is not
+            affiliated with Belgotex Floorcoverings (Pty) Ltd.
           </p>
-          <ul className="flex gap-4 text-xs text-primary-foreground/60 list-none p-0">
+          <ul className="flex gap-4 text-xs text-white/60 list-none p-0">
             <li>
-              <Link
-                href="#"
-                className="hover:text-accent transition-colors"
-              >
-                Terms
+              <Link href="#" className="hover:text-[#009347] transition-colors">
+                Terms &amp; Conditions
               </Link>
             </li>
             <li>
-              <Link
-                href="#"
-                className="hover:text-accent transition-colors"
-              >
-                Privacy (POPIA)
+              <Link href="#" className="hover:text-[#009347] transition-colors">
+                POPIA Notice
               </Link>
             </li>
           </ul>
+        </div>
+      </div>
+
+      {/* Demo built by Business Hustle credit */}
+      <div className="bg-[#212529] border-t border-white/10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-center">
+            <p className="text-sm text-white/70">
+              Demo built by{" "}
+              <a
+                href="https://www.hustleportal.online/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-[#009347] hover:text-[#33a96c] transition-colors underline underline-offset-2"
+              >
+                Business Hustle
+              </a>
+            </p>
+            <span className="hidden sm:inline text-white/30">|</span>
+            <p className="text-xs text-white/50">
+              A 1000x faster, fully accessible reimagining of belgotex.co.za
+            </p>
+          </div>
         </div>
       </div>
     </footer>

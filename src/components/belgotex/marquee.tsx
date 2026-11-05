@@ -1,38 +1,37 @@
 const items = [
-  "Architects specifying Belgotex carpet tile",
-  "Hotel groups sourcing vinyl",
-  "Residential developers fitting broadloom",
-  "Schools installing artificial grass",
-  "Retail chains rolling out carpet tile",
-  "Interior designers ordering rugs",
-  "Quantity surveyors pricing flooring",
-  "Contractors fitting vinyl tile",
+  "Broadloom Carpets",
+  "Modular Carpet Tiles",
+  "Luxury Vinyl Tile",
+  "Indoor and Outdoor Rugs",
+  "Artificial Grass",
+  "Commercial Solutions",
+  "Stainproof Miracle Fibre",
+  "EN 1307 Certified",
+  "Made in South Africa",
 ];
 
 export function Marquee() {
   return (
     <section
-      aria-label="Who we serve"
-      className="border-y border-border/60 bg-background py-4 overflow-hidden"
+      aria-label="Belgotex product range"
+      className="bg-[#009347] text-white py-3 sm:py-4 overflow-hidden"
     >
       <div className="relative">
-        {/* Fade edges */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background to-transparent z-10"
+          className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#009347] to-transparent z-10"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background to-transparent z-10"
+          className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#009347] to-transparent z-10"
         />
-        <ul className="marquee-track flex gap-8 sm:gap-12 whitespace-nowrap list-none p-0">
-          {/* Duplicate for seamless loop */}
+        <ul className="marquee-track flex gap-10 sm:gap-16 whitespace-nowrap list-none p-0">
           {[...items, ...items].map((item, i) => (
             <li
               key={i}
-              className="inline-flex items-center gap-3 text-sm sm:text-base text-muted-foreground"
+              className="inline-flex items-center gap-3 text-sm sm:text-base font-medium tracking-wide"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
               <span>{item}</span>
             </li>
           ))}
