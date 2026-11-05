@@ -66,8 +66,33 @@ def main():
             break
     print(f"[push] Got advertisement ({len(advertisement)} bytes)", file=sys.stderr)
 
-    # 5. Send our ref update command: <old-sha> <new-sha> <ref-name>\0<capabilities>\n
+    # 4.5 Parse the advertisement to find the current remote SHA for refs/heads/main
+    # Advertisement format (pkt-line):
+    #   <4-byte-hex-len><sha> <ref-name>\0<capabilities>\n  (first line, with capabilities)
+    #   <4-byte-hex-len><sha> <ref-name>\n                  (subsequent lines)
+    #   0000                                                  (flush)
     old_sha = "0" * 40
+    adv_text = advertisement.decode("ascii", errors="ignore")
+    for line in adv_text.split("\n"):
+        # Strip the 4-byte pkt-line length prefix
+        if len(line) >= 4 and line[:4].isdigit():
+            line = line[4:]
+        # Look for refs/heads/main (with or without NUL after)
+        if "refs/heads/main" in line:
+            parts = line.split(" ", 2)
+            if len(parts) >= 2 and len(parts[0]) == 40:
+                old_sha = parts[0]
+                break
+    print(f"[push] Remote SHA: {old_sha}", file=sys.stderr)
+
+    # If remote is already at new_sha, nothing to push
+    if old_sha == new_sha:
+        print("[push] Already up to date, nothing to push", file=sys.stderr)
+        chan.close()
+        client.close()
+        sys.exit(0)
+
+    # 5. Send our ref update command: <old-sha> <new-sha> <ref-name>\0<capabilities>\n
     ref_name = "refs/heads/main"
     capabilities = "report-status-v2 side-band-64k quiet object-format=sha1 agent=git/2.47.3"
 
@@ -80,21 +105,23 @@ def main():
     print(f"[push] Sent ref update: {old_sha[:8]} -> {new_sha[:8]}", file=sys.stderr)
 
     # 6. Generate the pack-objects stream locally and send it
-    # pack-objects reads commit/object SHAs from stdin (one per line),
-    # followed by a flush line. With no --not lines, all reachable objects
-    # from the listed SHAs are included.
-    proc = subprocess.Popen(
-        ["git", "pack-objects", "--stdout", "--thin", "--delta-base-offset", "-q"],
+    # Use git rev-list to compute the objects, piped into git pack-objects.
+    # This produces the proper pack containing only new objects.
+    rev_list = subprocess.Popen(
+        ["git", "rev-list", new_sha, "--not", old_sha],
         cwd=repo_dir,
-        stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    # Tell pack-objects to include all objects reachable from new_sha
-    proc.stdin.write(f"{new_sha}\n".encode())
-    proc.stdin.write(b"\n")  # flush
-    proc.stdin.flush()
-    proc.stdin.close()
+    proc = subprocess.Popen(
+        ["git", "pack-objects", "--stdout", "--thin", "--delta-base-offset", "-q"],
+        cwd=repo_dir,
+        stdin=rev_list.stdout,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    # Allow rev_list to receive SIGPIPE if proc exits
+    rev_list.stdout.close()
 
     # Stream the pack to the channel using blocking send (with timeout)
     import time as _time
