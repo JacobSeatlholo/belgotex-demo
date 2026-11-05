@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-SSH command wrapper using paramiko, so `git push` works in environments
-without an `ssh` binary (like this sandbox).
+SSH wrapper for git using paramiko's exec_command.
 
-Mimics the subset of `ssh` behavior that git needs:
-  ssh [-p PORT] [-i KEYFILE] [-o OPTION=VALUE...] user@host COMMAND
+The trick: paramiko's exec_command returns a Channel where stdout.channel
+IS the channel and is bidirectional. We can write to it AND read from it.
 
-Used via:  GIT_SSH_COMMAND="python3 /path/to/ssh_wrapper.py"
+Usage:
+  GIT_SSH_COMMAND="python3 scripts/ssh_wrapper.py" git push ...
 """
 import os
 import sys
@@ -18,32 +18,31 @@ import paramiko
 def parse_args(argv):
     port = 22
     key_file = os.path.expanduser("~/.ssh/id_ed25519")
-    options = {}
     target = None
-    command = None
+    command_parts = []
 
     i = 0
     while i < len(argv):
         a = argv[i]
         if a == "-p":
             port = int(argv[i + 1]); i += 2; continue
-        if a.startswith("-p"):
+        if a.startswith("-p") and len(a) > 2:
             port = int(a[2:]); i += 1; continue
         if a == "-i":
             key_file = argv[i + 1]; i += 2; continue
-        if a.startswith("-i"):
+        if a.startswith("-i") and len(a) > 2:
             key_file = a[2:]; i += 1; continue
         if a == "-o":
-            k, _, v = argv[i + 1].partition("=")
-            options[k] = v; i += 2; continue
-        if a.startswith("-o"):
-            k, _, v = a[2:].partition("=")
-            options[k] = v; i += 1; continue
+            i += 2; continue
+        if a.startswith("-o") and "=" in a:
+            i += 1; continue
+        if a.startswith("-G"):
+            i += 1; continue
         if a.startswith("-"):
             i += 1; continue
         if target is None:
             target = a; i += 1; continue
-        command = " ".join(argv[i:])
+        command_parts = argv[i:]
         break
 
     if target is None:
@@ -55,11 +54,15 @@ def parse_args(argv):
         host = user
         user = "git"
 
-    return port, key_file, options, user, host, command
+    return port, key_file, user, host, " ".join(command_parts)
 
 
 def main():
-    port, key_file, options, user, host, command = parse_args(sys.argv[1:])
+    port, key_file, user, host, command = parse_args(sys.argv[1:])
+
+    if not command:
+        sys.stderr.write("ssh_wrapper: no command given\n")
+        sys.exit(2)
 
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -72,17 +75,17 @@ def main():
             key_filename=key_file,
             look_for_keys=False,
             allow_agent=False,
-            timeout=20,
-            banner_timeout=20,
-            auth_timeout=20,
+            timeout=15,
+            banner_timeout=15,
+            auth_timeout=15,
         )
     except paramiko.AuthenticationException as e:
-        sys.stderr.write(f"ssh_wrapper: authentication failed: {e}\n")
+        sys.stderr.write(f"ssh_wrapper: authentication failed: {e}\n\n")
         sys.stderr.write(
-            "\nThe SSH public key has NOT been added to GitHub yet.\n"
-            "Add this key as a Deploy Key on the repo (Settings > Deploy keys > Add deploy key)\n"
-            "or as a personal SSH key on your GitHub account (Settings > SSH and GPG keys).\n\n"
-            "Public key to add:\n\n"
+            "The SSH public key has NOT been added to GitHub yet.\n"
+            "Add this key as a Deploy Key (with write access) on the repo at\n"
+            "Settings > Deploy keys > Add deploy key, or as a personal SSH key\n"
+            "at Settings > SSH and GPG keys:\n\n"
         )
         try:
             with open(os.path.expanduser("~/.ssh/id_ed25519.pub")) as f:
@@ -94,51 +97,79 @@ def main():
         sys.stderr.write(f"ssh_wrapper: connection error: {e}\n")
         sys.exit(1)
 
-    if command is None:
-        sys.stderr.write("ssh_wrapper: no command given\n")
-        client.close()
-        sys.exit(2)
-
     transport = client.get_transport()
     chan = transport.open_session()
+    # IMPORTANT: do not request a PTY for git
     chan.exec_command(command)
+
+    # Set non-blocking
     chan.setblocking(False)
 
+    # Background: pump stdin (fd 0) -> channel.send
     def pump_stdin():
         try:
             while True:
                 data = os.read(0, 65536)
                 if not data:
+                    # EOF on stdin
                     try:
                         chan.shutdown_write()
                     except Exception:
                         pass
-                    break
-                chan.sendall(data)
+                    return
+                # Send with retry on WouldBlock
+                while data:
+                    try:
+                        sent = chan.send(data)
+                        if sent == 0:
+                            return
+                        data = data[sent:]
+                    except Exception:
+                        return
         except Exception:
             pass
 
     t = threading.Thread(target=pump_stdin, daemon=True)
     t.start()
 
-    while True:
-        r, _, _ = select.select([chan], [], [], 1.0)
-        if chan.recv_ready():
-            data = chan.recv(65536)
-            if not data:
+    # Main: read channel -> stdout/stderr
+    rc = 0
+    try:
+        while True:
+            r, _, _ = select.select([chan], [], [], 1.0)
+            if r:
+                if chan.recv_ready():
+                    data = chan.recv(65536)
+                    if not data:
+                        break
+                    sys.stdout.buffer.write(data)
+                    sys.stdout.buffer.flush()
+                if chan.recv_stderr_ready():
+                    data = chan.recv_stderr(65536)
+                    if data:
+                        sys.stderr.buffer.write(data)
+                        sys.stderr.buffer.flush()
+            if chan.exit_status_ready():
+                # Drain
+                while chan.recv_ready():
+                    data = chan.recv(65536)
+                    if not data:
+                        break
+                    sys.stdout.buffer.write(data)
+                    sys.stdout.buffer.flush()
+                while chan.recv_stderr_ready():
+                    data = chan.recv_stderr(65536)
+                    if not data:
+                        break
+                    sys.stderr.buffer.write(data)
+                    sys.stderr.buffer.flush()
+                rc = chan.recv_exit_status()
                 break
-            sys.stdout.buffer.write(data)
-            sys.stdout.buffer.flush()
-        if chan.recv_stderr_ready():
-            data = chan.recv_stderr(65536)
-            sys.stderr.buffer.write(data)
-            sys.stderr.buffer.flush()
-        if chan.exit_status_ready() and not chan.recv_ready() and not chan.recv_stderr_ready():
-            break
+    finally:
+        t.join(timeout=2)
+        chan.close()
+        client.close()
 
-    rc = chan.recv_exit_status() if chan.exit_status_ready() else 0
-    chan.close()
-    client.close()
     sys.exit(rc)
 
 
